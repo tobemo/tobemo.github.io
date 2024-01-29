@@ -1,0 +1,19 @@
+optuna:
+  monitor: valid/loss
+  study:
+    study_name: boring
+    direction: minimize
+    sampler:
+      class_path: optuna.samplers.RandomSampler
+      init_args:
+        seed: 42
+  optimize:
+    n_trials: 3
+    
+  model:
+    init_args:
+      latent_dim:
+        type: int
+        kwargs:
+          low: 16
+          high: 64
