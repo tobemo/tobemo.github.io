@@ -1,0 +1,12 @@
+.venv
+.*
+**.pyc
+*.tar.gz
+data/*.parquet
+*debug*
+*.db
+
+exploration
+notes/TODO.md
+runs
+batching.bat
