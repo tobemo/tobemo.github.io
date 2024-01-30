@@ -1,0 +1,11 @@
+class_path: model.classifier.TemporalClassifier
+init_args:
+  input_length: 117
+  input_channels: 2
+  C: 10
+  n_layers: 3
+  dropout: 0.25
+  lr: 1e-3
+  lr_restart: 6
+  pool_level: 2
+  hidden_dimension: 3_000
