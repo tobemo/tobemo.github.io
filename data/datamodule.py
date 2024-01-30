@@ -14,7 +14,7 @@ class BoringDataModule(L.LightningDataModule):
     valid_set: Dataset
     test_set: Dataset
     predict_set: Dataset
-    scaler: StandardScaler | RobustScaler | Normalizer
+    scaler: StandardScaler | RobustScaler | Normalizer = None
     
     def __init__(self, size: int, length: int, batch_size: int = 32 ,**kwargs) -> None:
         super().__init__()
