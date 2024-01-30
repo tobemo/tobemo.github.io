@@ -72,7 +72,7 @@ class BoringModel(LightningModule):
     def validation_step(self, batch: torch.Tensor, batch_idx: int = None) -> STEP_OUTPUT:
         X, y_true = batch
         loss, y_pred = self.generic_step(X, y_true)
-        acc = accuracy(preds=y_pred, target=y_true)
+        acc = accuracy(preds=y_pred, target=y_true, task='multiclass', num_classes=self.hparams.C)
         self.log("hp/loss", loss)
         self.log("hp/acc", acc)
         self.log("valid/loss", loss)
@@ -82,7 +82,7 @@ class BoringModel(LightningModule):
     def test_step(self, batch: torch.Tensor, batch_idx: int = None) -> STEP_OUTPUT:
         X, y_true = batch
         loss, y_pred = self.generic_step(X, y_true)
-        acc = accuracy(preds=y_pred, target=y_true)
+        acc = accuracy(preds=y_pred, target=y_true, task='multiclass', num_classes=self.hparams.C)
         self.log("test/loss", loss)
         self.log("test/acc", acc)
         return loss

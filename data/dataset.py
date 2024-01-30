@@ -13,7 +13,7 @@ class RandomDataset(Dataset):
         self.data = torch.randn(length, size)
 
     def __getitem__(self, index: int) -> Tensor:
-        return self.data[index]
+        return self.data[index], 0
 
     def __len__(self) -> int:
         return self.len

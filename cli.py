@@ -12,8 +12,8 @@ from lightning.pytorch.trainer import Trainer
 from optuna.integration.pytorch_lightning import \
     PyTorchLightningPruningCallback
 
-from data.datamodule import SequentialNumberBase
-from model.linear import BaseClassifier
+from data.datamodule import BoringDataModule
+from model.base import BoringModel
 
 
 class MyTrainer(Trainer):
@@ -218,8 +218,8 @@ class EnhancedCli(LightningCLI):
 
 def get_cli() -> None:
     cli = EnhancedCli(
-        model_class=BaseClassifier, subclass_mode_model=True,
-        datamodule_class=SequentialNumberBase, subclass_mode_data=True,
+        model_class=BoringModel, subclass_mode_model=True,
+        datamodule_class=BoringDataModule, subclass_mode_data=True,
     )
 
 

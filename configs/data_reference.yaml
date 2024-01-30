@@ -1,5 +1,5 @@
 class_path: data.datamodule.BoringDataModule
 init_args:
   batch_size: 32
-  size: 4
-  length: 32
+  size: 32
+  length: 128
