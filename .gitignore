@@ -6,6 +6,8 @@ data/*.parquet
 *debug*
 *.db
 
+data/sequences
+
 exploration
 notes/TODO.md
 runs
