@@ -1,7 +1,11 @@
-class_path: model.base.BoringModel
+class_path: model.classifier.TemporalClassifier
 init_args:
+  input_length: 117
+  input_channels: 2
   C: 10
-  latent_dim: 32
-  dropout: 0.2
+  n_layers: 3
+  dropout: 0.25
   lr: 1e-3
-  lr_restart: 4
+  lr_restart: 6
+  pool_level: 4
+  hidden_dimension: 2_000
