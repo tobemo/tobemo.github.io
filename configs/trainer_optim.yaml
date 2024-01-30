@@ -1,0 +1,59 @@
+# base
+accelerator: cuda
+max_epochs: 64
+accumulate_grad_batches: 8
+precision: 16-mixed
+logger:
+  class_path: TensorBoardLogger
+  init_args:
+    save_dir: runs
+    name: NOTSET
+    default_hp_metric: False
+callbacks:
+  - class_path: ModelCheckpoint
+    init_args:
+      monitor: valid/loss
+      save_last: True
+      save_top_k: 2
+  - class_path: LearningRateMonitor
+    init_args:
+      logging_interval: step
+max_time: null
+enable_checkpointing: null
+
+# multi device
+num_nodes: 1
+sync_batchnorm: false
+
+# debug
+fast_dev_run: false
+limit_train_batches: null
+limit_val_batches: null
+limit_test_batches: null
+limit_predict_batches: null
+overfit_batches: 0.0
+profiler: null
+
+# other
+default_root_dir: runs
+strategy: auto
+devices: auto
+min_epochs: null
+max_steps: -1
+min_steps: null
+val_check_interval: null
+check_val_every_n_epoch: 1
+num_sanity_val_steps: null
+log_every_n_steps: null
+enable_progress_bar: null
+enable_model_summary: null
+gradient_clip_val: null
+gradient_clip_algorithm: null
+deterministic: null
+benchmark: null
+inference_mode: true
+use_distributed_sampler: true
+detect_anomaly: false
+barebones: false
+plugins: null
+reload_dataloaders_every_n_epochs: 0
