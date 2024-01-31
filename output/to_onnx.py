@@ -85,7 +85,7 @@ def prep_model_for_export(name: str, version: int, ckpt: str = 'last') -> tuple[
     # onnx needs a reference input;
     # future inputs passed to the resulting onnx model
     # that differ from this shape will cause an error
-    sample = torch.ones(1, model.in_channels, data.length) # TODO: set as .example_input_array in LightningModule
+    sample = torch.ones(1, model.hparams.input_channels, data.length) # TODO: set as .example_input_array in LightningModule
     return model, sample
 
 
