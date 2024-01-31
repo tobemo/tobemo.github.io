@@ -14,13 +14,18 @@ model:
     spatial_channels: 2
     dense: True
 
+trainer:
+  logger:
+    init_args:
+      name: SpatioTemporalClassifier
+
 optuna:
   monitor: valid/loss
   study:
-    study_name: NOTSET
+    study_name: SpatioTemporalClassifier
     direction: minimize
   optimize:
-    n_trials: 3
+    timeout: 14_400 # H4
     
   model:
     init_args:
