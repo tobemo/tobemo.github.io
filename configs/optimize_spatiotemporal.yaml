@@ -1,0 +1,51 @@
+model:
+  class_path: model.classifier.SpatioTemporalClassifier
+  init_args:
+    input_length: 117
+    input_channels: 2
+    C: 10
+    dropout: 0.5
+    lr: 1e-3
+    lr_restart: 6
+
+    pool_level: 4
+    n_layers: 3
+    hidden_dimension: 5_000
+    spatial_channels: 2
+    dense: True
+
+trainer:
+  logger:
+    init_args:
+      name: SpatioTemporalClassifier
+
+optuna:
+  monitor: valid/loss
+  study:
+    study_name: SpatioTemporalClassifier
+    direction: minimize
+  optimize:
+    timeout: 14_400 # H4
+    
+  model:
+    init_args:
+      n_layers:
+        type: int
+        kwargs:
+          low: 1
+          high: 4
+      hidden_dimension:
+        type: int
+        kwargs:
+          low: 2_000
+          high: 8_000
+          log: True
+      spatial_channels:
+        type: int
+        kwargs:
+          low: 1
+          high: 6
+      dense:
+        type: categorical
+        kwargs:
+          choices: [True, False]

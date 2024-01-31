@@ -1,4 +1,6 @@
+import logging
 from copy import deepcopy
+from logging import getLogger
 from pathlib import Path
 from typing import Dict, Set
 
@@ -113,6 +115,13 @@ class EnhancedCli(LightningCLI):
             self.study = optuna.create_study(**study_settings)
         
     def before_optimize(self) -> None:
+        # log runtime errors
+        self.optuna_logger = getLogger('optuna')
+        self.optuna_logger.setLevel(logging.ERROR)
+        file_handler = logging.FileHandler(f"optuna.{self.study.study_name}.log")
+        file_handler.setFormatter(logging.Formatter('%(asctime)s::\n%(message)s'))
+        self.optuna_logger.addHandler(file_handler)
+        
         # inject one or more self.objective() calls before Trainer.optimize() is called
         # then turn Trainer.optimize() into a no-op
         optimize_settings = self._get(self.config, "optuna.optimize")
@@ -125,6 +134,14 @@ class EnhancedCli(LightningCLI):
         self.trainer.optimize = lambda *args, **kwargs: None
     
     def objective(self, trial: optuna.trial.Trial) -> float:
+        # wrap objective function to catch and log any errors
+        try:
+            self._objective(trial)
+        except Exception as e:
+            self.optuna_logger.exception(e)
+            return None
+    
+    def _objective(self, trial: optuna.trial.Trial) -> float:
         # one training run using parameters suggested to test for this trial
         # if configs are not present in optuna original configs are used
         
