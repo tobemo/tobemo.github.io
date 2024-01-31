@@ -5,6 +5,8 @@
 data/*.parquet
 *debug*
 *.db
+LICENSE
+README.md
 
 data/sequences
 output/*/*
