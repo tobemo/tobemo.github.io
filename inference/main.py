@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 from ipywidgets import HBox
 from traitlets import TraitError
@@ -7,8 +9,28 @@ from inference.graph import ProbabilityPlotter
 from inference.model import ModelList, OnnxModel
 
 
+OUTPUT = os.getenv("OUTPUT_PATH", 'output')
+
+
 class Demo(HBox):
     proba: list
+    
+    _throttle_model = 1
+    @property
+    def throttle_model(self) -> int:
+        return self._throttle_model
+    @throttle_model.setter
+    def throttle_model(self, i: int) -> None:
+        self._throttle_model = i
+    
+    _throttle_graph = 10
+    @property
+    def throttle_graph(self) -> int:
+        return self._throttle_graph
+    @throttle_graph.setter
+    def throttle_graph(self, i: int) -> None:
+        self._throttle_graph = i
+    
     def __init__(self, simple: bool) -> None:
         """A simple demo that predicts what number (0-9) is being drawn.
         This does not work with images but instead looks at the change of direction
@@ -27,8 +49,8 @@ class Demo(HBox):
             border_width=5,
         )
         fps = [
-                "output/temporal_large",
-                "output/temporal_small",
+                f"{OUTPUT}/temporal_large",
+                f"{OUTPUT}/temporal_small",
             ]
         self.predictor = OnnxModel(fps[0]) if simple else ModelList(fps)
         try:
@@ -54,25 +76,30 @@ class Demo(HBox):
     def _on_mouse_move(self, *args) -> None:
         self.canvas.drawing._on_mouse_move(*args)
         if self.canvas.drawing.is_drawing:
-            self.get_proba()
+            self.plot_proba()
     
     def predict(self, *args) -> None:
         stroke = self.canvas.drawing.stroke
         y = self.predictor.predict(stroke)
         self.canvas.header.description = str(y)
+        self.plot_proba(force=True)
+
+    def _plot(self) -> None:
+        proba = np.stack(self.proba).T
+        self.plotter.plot(proba * 100)
     
-    def get_proba(self, *args) -> None:
+    def _predict_proba(self) -> None:
         stroke = self.canvas.drawing.stroke
         y = self.predictor.proba(stroke)
-        if y is None:
-            return
+        if y is not None:
+            self.proba.append(y)
+    
+    def plot_proba(self, force: bool = False, *args) -> None:
+        if ( self.canvas.drawing.stroke.shape[1] % self.throttle_model == 0 ) or force:
+            self._predict_proba()
         
-        self.proba.append(y)
-        proba = np.stack(self.proba).T
-        if proba.shape[1] < 3:
+        if len(self.proba) < 3:
             return
-        if proba.shape[1] % 10 != 0:
-            return
-        
-        self.plotter.plot(proba * 100)
+        if ( len(self.proba) % self.throttle_graph == 0 ) or force:
+            self._plot()
 
