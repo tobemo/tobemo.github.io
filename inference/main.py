@@ -27,8 +27,8 @@ class Demo(HBox):
             border_width=5,
         )
         fps = [
-                "output/model_A",
-                "output/model_B",
+                "output/temporal_large",
+                "output/temporal_small",
             ]
         self.predictor = OnnxModel(fps[0]) if simple else ModelList(fps)
         try:
