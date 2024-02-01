@@ -125,6 +125,7 @@ class EnhancedCli(LightningCLI):
         # inject one or more self.objective() calls before Trainer.optimize() is called
         # then turn Trainer.optimize() into a no-op
         optimize_settings = self._get(self.config, "optuna.optimize")
+        print(optimize_settings)
         self.study.optimize(
             self.objective,
             **optimize_settings
@@ -137,6 +138,8 @@ class EnhancedCli(LightningCLI):
         # wrap objective function to catch and log any errors
         try:
             self._objective(trial)
+        except optuna.exceptions.TrialPruned:
+            raise
         except Exception as e:
             self.optuna_logger.exception(e)
             return None
