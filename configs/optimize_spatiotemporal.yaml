@@ -35,21 +35,21 @@ optuna:
     init_args:
       n_layers:
         type: int
-        kwargs:
+        init_args:
           low: 1
           high: 3
       hidden_dimension:
         type: int
-        kwargs:
+        init_args:
           low: 2_000
           high: 8_000
           log: True
       spatial_channels:
         type: int
-        kwargs:
+        init_args:
           low: 1
           high: 6
       dense:
         type: categorical
-        kwargs:
+        init_args:
           choices: [True, False]

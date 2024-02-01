@@ -36,7 +36,7 @@ def _trial_suggest_from_config(trial: optuna.Trial, optuna: dict, config: Namesp
     if 'init_args' in optuna:
         for arg, values in optuna['init_args'].items():
             fn = getattr(trial, f"suggest_{values['type']}")
-            val = fn(name=name + '.' + arg, **values['kwargs'])
+            val = fn(name=name + '.' + arg, **values['init_args'])
             setattr(config, 'init_args.' + arg, val)
     return config
 
