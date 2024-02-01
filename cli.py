@@ -81,11 +81,11 @@ class EnhancedCli(LightningCLI):
             parser.add_argument("--optuna.study.sampler", default=None)
             parser.add_argument("--optuna.study.pruner", default=None)
             parser.add_argument("--optuna.study.study_name", default=None)
-            parser.add_argument("--optuna.study.direction", default='minimize')
+            parser.add_argument("--optuna.study.direction", default=None)
             parser.add_argument("--optuna.study.load_if_exists", default=True)
             parser.add_argument("--optuna.study.directions", default=None)
             # optimize call of a study settings; again using optuna's defaults
-            parser.add_argument("--optuna.optimize.n_trials", default=10)
+            parser.add_argument("--optuna.optimize.n_trials", default=None)
             parser.add_argument("--optuna.optimize.timeout", default=None)
             parser.add_argument("--optuna.optimize.n_jobs", default=1)
             parser.add_argument("--optuna.optimize.gc_after_trial", default=False)
