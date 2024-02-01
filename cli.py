@@ -143,7 +143,7 @@ class EnhancedCli(LightningCLI):
         # wrap objective function to catch and log any errors
         try:
             self._objective(trial)
-        except optuna.exceptions.TrialPruned:
+        except (optuna.exceptions.TrialPruned, KeyboardInterrupt):
             raise
         except Exception as e:
             self.optuna_logger.exception(e)
