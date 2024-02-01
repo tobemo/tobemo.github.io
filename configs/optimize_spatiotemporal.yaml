@@ -24,8 +24,12 @@ optuna:
   study:
     study_name: SpatioTemporalClassifier
     direction: minimize
+    pruner:
+      class_path: optuna.pruners.MedianPruner
+      init_args:
+        n_warmup_steps: 3
   optimize:
-    timeout: 14_400 # H4
+    timeout: 7_200 # H2
     
   model:
     init_args:
@@ -33,7 +37,7 @@ optuna:
         type: int
         kwargs:
           low: 1
-          high: 4
+          high: 3
       hidden_dimension:
         type: int
         kwargs:
