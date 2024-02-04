@@ -109,6 +109,9 @@ class DrawableCanvas(RoughCanvas):
         
         # combine lines with overlapping circles to create a somewhat smooth drawing
         with hold_canvas():
+            x_ = ( self.position[0][-1] + x ) / 2 # interleave last and current x
+            y_ = ( self.position[1][-1] + y ) / 2
+            self.fill_circle(x_, y_, 0.75 * self.line_width)
             self.fill_circle(x, y, 0.75 * self.line_width)
             self.stroke_line(self.position[0][-1], self.position[1][-1], x, y)
         
