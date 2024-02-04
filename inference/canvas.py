@@ -6,6 +6,7 @@ from ipywidgets.widgets import AppLayout, Button, Layout
 class DrawableCanvas(RoughCanvas):
     is_drawing: bool = False
     position: list[list] = [[],[]]
+    """A list of x coordinates and a list of y coordinates."""
     @property
     def coordinates(self) -> np.ndarray:
         """Coordinates of drawn points."""
@@ -17,6 +18,8 @@ class DrawableCanvas(RoughCanvas):
     
     mnist_shape: tuple = (28, 28)
     scaling: tuple
+    """Scaling factor to convert canvas sized drawings back to MNIST size.
+    The canvas can be set larger than the 28x28px that the MNIST dataset uses."""
     canvas_width: int
     canvas_height: int
     border_width: int
@@ -42,8 +45,9 @@ class DrawableCanvas(RoughCanvas):
     
     def reset(self) -> None:
         self._set_canvas()
+    
     def _set_canvas(self) -> None:
-        # clear and reset all
+        # clear all previous drawings and reset drawing settings
         self.clear_rect(
             self.border_width,
             self.border_width,
@@ -78,7 +82,7 @@ class DrawableCanvas(RoughCanvas):
             self.canvas_height - 2 * self.border_width
             )
         
-        # (re)set defaults
+        # settings for digit drawing
         self.stroke_style = "black"
         self.global_alpha = 1
         self.roughness = 0
@@ -98,12 +102,16 @@ class DrawableCanvas(RoughCanvas):
         if not self.is_drawing:
             return
         
+        # combine lines with overlapping circles to create a somewhat smooth drawing
         if len(self.position[0]) > 0 and len(self.position[1]) > 0:
             with hold_canvas():
                 self.fill_circle(x, y, 0.75 * self.line_width)
                 self.stroke_line(self.position[0], self.position[1], x, y)
         
+        # convert coordinates back to mnist scale
         x, y = x // self.scaling[0], y // self.scaling[1]
+        
+        # only store changes in coordinates
         if (x == self.position[0][-1]) and (y == self.position[1][-1]):
             return
         self.position[0].append(x)
@@ -117,6 +125,7 @@ class DrawableCanvas(RoughCanvas):
         if len(self.position[0]) <= 0 or len(self.position[1]) <= 0:
             return
         
+        # don't forget to draw final stroke
         with hold_canvas():
             self.fill_circle(x, y, 0.75 * self.line_width)
             self.stroke_line(self.position[0], self.position[1], x, y)
