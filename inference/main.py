@@ -18,7 +18,7 @@ class Demo(HBox):
     _throttle_model = 1
     @property
     def throttle_model(self) -> int:
-        """Only predict every n steps."""
+        """Only predict every n steps. Defaults to 1"""
         return self._throttle_model
     @throttle_model.setter
     def throttle_model(self, i: int) -> None:
@@ -27,7 +27,7 @@ class Demo(HBox):
     _throttle_graph = 10
     @property
     def throttle_graph(self) -> int:
-        """Only draw every n steps."""
+        """Only draw every n steps. Defaults to 10."""
         return self._throttle_graph
     @throttle_graph.setter
     def throttle_graph(self, i: int) -> None:
