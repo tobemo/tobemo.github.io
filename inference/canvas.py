@@ -102,11 +102,13 @@ class DrawableCanvas(RoughCanvas):
         if not self.is_drawing:
             return
         
+        if len(self.position[0]) <= 0 or len(self.position[1]) <= 0:
+            return
+        
         # combine lines with overlapping circles to create a somewhat smooth drawing
-        if len(self.position[0]) > 0 and len(self.position[1]) > 0:
-            with hold_canvas():
-                self.fill_circle(x, y, 0.75 * self.line_width)
-                self.stroke_line(self.position[0], self.position[1], x, y)
+        with hold_canvas():
+            self.fill_circle(x, y, 0.75 * self.line_width)
+            self.stroke_line(self.position[0], self.position[1], x, y)
         
         # convert coordinates back to mnist scale
         x, y = x // self.scaling[0], y // self.scaling[1]
