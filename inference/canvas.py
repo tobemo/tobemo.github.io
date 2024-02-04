@@ -87,12 +87,10 @@ class DrawableCanvas(RoughCanvas):
         self.line_width = 20
     
     def _on_mouse_down(self, x, y) -> None:
-        if len(self.position[0]) > 0:
-            self.reset()
+        self.reset()
+        self.is_drawing = True
         
         self.position = [[],[]]
-
-        self.is_drawing = True
         self.position[0].append(x)
         self.position[1].append(y)
     
