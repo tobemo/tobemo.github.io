@@ -5,17 +5,6 @@ from ipywidgets.widgets import AppLayout, Button, Layout
 
 class DrawableCanvas(RoughCanvas):
     is_drawing: bool = False
-    position: list[list] = [[],[]]
-    """A list of x coordinates and a list of y coordinates."""
-    @property
-    def coordinates(self) -> np.ndarray:
-        """Coordinates of drawn points."""
-        return np.array(self.position)
-    @property
-    def stroke(self) -> np.ndarray:
-        """x and y changes of coordinates."""
-        return np.diff(self.coordinates, axis=1)[:, 1:]
-    
     mnist_shape: tuple = (28, 28)
     scaling: tuple
     """Scaling factor to convert canvas sized drawings back to MNIST size.
@@ -23,6 +12,19 @@ class DrawableCanvas(RoughCanvas):
     canvas_width: int
     canvas_height: int
     border_width: int
+    
+    position: list[list] = [[],[]]
+    """A list of x coordinates and a list of y coordinates in canvas scale."""
+    _coordinates: list[list] = [[],[]]
+    """A list of x coordinates and a list of y coordinates in mnist scale."""
+    @property
+    def coordinates(self) -> np.ndarray:
+        """Coordinates of drawn points."""
+        return np.array(self._coordinates)
+    @property
+    def stroke(self) -> np.ndarray:
+        """x and y changes of coordinates."""
+        return np.diff(self.coordinates, axis=1)[:, 1:]
     
     def __init__(self, draw_area: tuple, border_width: int):
         """An inline canvas on which can be drawn.
@@ -94,9 +96,9 @@ class DrawableCanvas(RoughCanvas):
         self.reset()
         self.is_drawing = True
         
-        self.position = [[],[]]
-        self.position[0].append(x)
-        self.position[1].append(y)
+        self.position = [[x],[y]]
+        x, y = x // self.scaling[0], y // self.scaling[1]
+        self._coordinates = [[x],[y]]
     
     def _on_mouse_move(self, x, y) -> None:
         if not self.is_drawing:
@@ -108,16 +110,19 @@ class DrawableCanvas(RoughCanvas):
         # combine lines with overlapping circles to create a somewhat smooth drawing
         with hold_canvas():
             self.fill_circle(x, y, 0.75 * self.line_width)
-            self.stroke_line(self.position[0], self.position[1], x, y)
+            self.stroke_line(self.position[0][-1], self.position[1][-1], x, y)
+        
+        self.position[0].append(x)
+        self.position[1].append(y)
         
         # convert coordinates back to mnist scale
         x, y = x // self.scaling[0], y // self.scaling[1]
         
         # only store changes in coordinates
-        if (x == self.position[0][-1]) and (y == self.position[1][-1]):
+        if (x == self._coordinates[0][-1]) and (y == self._coordinates[1][-1]):
             return
-        self.position[0].append(x)
-        self.position[1].append(y)
+        self._coordinates[0].append(x)
+        self._coordinates[1].append(y)
     
     def _on_mouse_up(self, x, y) -> None:
         if not self.is_drawing:
