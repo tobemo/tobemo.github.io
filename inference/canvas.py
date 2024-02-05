@@ -25,6 +25,9 @@ class DrawableCanvas(RoughCanvas):
     def stroke(self) -> np.ndarray:
         """x and y changes of coordinates."""
         return np.diff(self.coordinates, axis=1)[:, 1:]
+    @property
+    def cursor_has_moved(self) -> bool:
+        return len(self.position[0]) > 0 or len(self.position[1]) > 0
     
     def __init__(self, draw_area: tuple, border_width: int):
         """An inline canvas on which can be drawn.
@@ -45,7 +48,7 @@ class DrawableCanvas(RoughCanvas):
         self.on_mouse_up(self._on_mouse_up)
         self.on_mouse_out(self._on_mouse_out)
     
-    def reset(self) -> None:
+    def reset_canvas(self) -> None:
         self._set_canvas()
     
     def _set_canvas(self) -> None:
@@ -93,52 +96,61 @@ class DrawableCanvas(RoughCanvas):
         self.line_width = 20
     
     def _on_mouse_down(self, x, y) -> None:
-        self.reset()
+        self.reset_canvas()
         self.is_drawing = True
         
         self.position = [[x],[y]]
-        x, y = x // self.scaling[0], y // self.scaling[1]
-        self._coordinates = [[x],[y]]
+        x_in_mnist_scale, y_in_mnist_scale = x // self.scaling[0], y // self.scaling[1]
+        self._coordinates = [[x_in_mnist_scale],[y_in_mnist_scale]]
+    
+    def _draw_connection_between_two_points(self, *, previous_x: float, previous_y: float, current_x: float, current_y: float) -> None:
+        # Combine lines with overlapping circles to create a somewhat smooth drawing.
+        x_interleaved = ( previous_x + current_x ) / 2
+        y_interleaved = ( previous_y + current_y ) / 2
+        with hold_canvas():
+            self.fill_circle(x_interleaved, y_interleaved, 0.75 * self.line_width)
+            self.fill_circle(current_x, current_y, 0.75 * self.line_width)
+            self.stroke_line(previous_x, previous_y, current_x, current_y)
+    
+    def _draw_last_made_stroke(self, x: float, y: float) -> None:
+        previous_x, previous_y = self.position[0][-1], self.position[1][-1]
+        self._draw_connection_between_two_points(
+            previous_x=previous_x,
+            previous_y=previous_y,
+            current_x=x,
+            current_y=y,
+        )
     
     def _on_mouse_move(self, x, y) -> None:
         if not self.is_drawing:
             return
-        
-        if len(self.position[0]) <= 0 or len(self.position[1]) <= 0:
+        if not self.cursor_has_moved:
             return
         
-        # combine lines with overlapping circles to create a somewhat smooth drawing
-        with hold_canvas():
-            x_ = ( self.position[0][-1] + x ) / 2 # interleave last and current x
-            y_ = ( self.position[1][-1] + y ) / 2
-            self.fill_circle(x_, y_, 0.75 * self.line_width)
-            self.fill_circle(x, y, 0.75 * self.line_width)
-            self.stroke_line(self.position[0][-1], self.position[1][-1], x, y)
-        
+        # store cursor position
         self.position[0].append(x)
         self.position[1].append(y)
         
-        # convert coordinates back to mnist scale
-        x, y = x // self.scaling[0], y // self.scaling[1]
+        self._draw_last_made_stroke(x=x, y=y)
         
-        # only store changes in coordinates
-        if (x == self._coordinates[0][-1]) and (y == self._coordinates[1][-1]):
-            return
-        self._coordinates[0].append(x)
-        self._coordinates[1].append(y)
+        # store x-y coordinates
+        x_in_mnist_scale, y_in_mnist_scale = x // self.scaling[0], y // self.scaling[1]
+        last_x_coordinate, last_y_coordinate = self._coordinates[0][-1], self._coordinates[1][-1]
+        x_has_changed = x_in_mnist_scale != last_x_coordinate
+        y_has_changed = y_in_mnist_scale != last_y_coordinate
+        if x_has_changed or y_has_changed:
+            self._coordinates[0].append(x_in_mnist_scale)
+            self._coordinates[1].append(y_in_mnist_scale)
     
     def _on_mouse_up(self, x, y) -> None:
         if not self.is_drawing:
             return
         self.is_drawing = False
 
-        if len(self.position[0]) <= 0 or len(self.position[1]) <= 0:
+        if not self.cursor_has_moved:
             return
         
-        # don't forget to draw final stroke
-        with hold_canvas():
-            self.fill_circle(x, y, 0.75 * self.line_width)
-            self.stroke_line(self.position[0], self.position[1], x, y)
+        self._draw_last_made_stroke()
     
     def _on_mouse_out(self, x, y) -> None:
         self.is_drawing = False
@@ -171,5 +183,5 @@ class InteractiveCanvas(AppLayout):
         )
 
     def reset(self, *args) -> None:
-        self.drawing.reset()
+        self.drawing.reset_canvas()
         self.header.description = self.title
