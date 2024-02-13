@@ -29,7 +29,7 @@ optuna:
       init_args:
         n_warmup_steps: 3
   optimize:
-    timeout: 7_200 # H2
+    timeout: 21_600 # H6
     
   model:
     init_args:
