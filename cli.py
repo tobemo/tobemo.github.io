@@ -142,7 +142,7 @@ class EnhancedCli(LightningCLI):
     def objective(self, trial: optuna.trial.Trial) -> float:
         # wrap objective function to catch and log any errors
         try:
-            self._objective(trial)
+            return self._objective(trial)
         except (optuna.exceptions.TrialPruned, KeyboardInterrupt):
             raise
         except Exception as e:
