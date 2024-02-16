@@ -1,0 +1,18 @@
+version: "3.7"
+services:
+  demo:
+    container_name: "MNIST-demo"
+    build:
+      dockerfile_inline: |
+        FROM quay.io/jupyter/scipy-notebook:python-3.11
+        COPY ./output/temporal_large/ ./output/temporal_large/
+        COPY ./output/temporal_small/ ./output/temporal_small/
+        COPY ./inference/ ./inference/
+        COPY requirements.txt .
+        COPY demo.ipynb .
+        RUN pip install -r requirements.txt --no-dependencies
+    ports:
+      - "8888:8888"
+    environment:
+      - DOCKER_STACKS_JUPYTER_CMD=nbclassic
+    command: start-notebook.py --IdentityProvider.token=''
