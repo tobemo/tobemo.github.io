@@ -13,7 +13,6 @@ services:
         COPY demo.ipynb .
         RUN pip install -r requirements.txt --no-dependencies
         ENV DOCKER_STACKS_JUPYTER_CMD=notebook
-        ENTRYPOINT start-notebook.sh --NotebookApp.token=''
-        CMD start-notebook.py
+        ENTRYPOINT start-notebook.py --IdentityProvider.token=''
     ports:
       - "8888:8888"
