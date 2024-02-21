@@ -16,3 +16,6 @@ services:
         ENTRYPOINT start-notebook.py --IdentityProvider.token=''
     ports:
       - "8888:8888"
+
+# docker run -p 8888:8888 tobemo/demo
+# http://localhost:8888/notebooks/demo.ipynb
