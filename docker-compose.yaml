@@ -2,6 +2,7 @@ version: "3.7"
 services:
   demo:
     container_name: "MNIST-demo"
+    image: tobemo/demo
     build:
       dockerfile_inline: |
         FROM quay.io/jupyter/scipy-notebook:python-3.11
@@ -11,8 +12,8 @@ services:
         COPY requirements.txt .
         COPY demo.ipynb .
         RUN pip install -r requirements.txt --no-dependencies
+        ENV DOCKER_STACKS_JUPYTER_CMD=nbclassic
+        ENTRYPOINT start-notebook.sh --NotebookApp.token=''
+        CMD start-notebook.py
     ports:
       - "8888:8888"
-    environment:
-      - DOCKER_STACKS_JUPYTER_CMD=nbclassic
-    command: start-notebook.py --IdentityProvider.token=''
