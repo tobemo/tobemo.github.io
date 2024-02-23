@@ -150,7 +150,7 @@ class DrawableCanvas(RoughCanvas):
         if not self.cursor_has_moved:
             return
         
-        self._draw_last_made_stroke()
+        self._draw_last_made_stroke(x=x, y=y)
     
     def _on_mouse_out(self, x, y) -> None:
         self.is_drawing = False
