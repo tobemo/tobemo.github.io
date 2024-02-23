@@ -6,12 +6,12 @@ services:
     build:
       dockerfile_inline: |
         FROM quay.io/jupyter/scipy-notebook:python-3.11
+        COPY requirements.txt .
+        RUN pip install -r requirements.txt --no-dependencies
         COPY ./output/temporal_large/ ./output/temporal_large/
         COPY ./output/temporal_small/ ./output/temporal_small/
         COPY ./inference/ ./inference/
-        COPY requirements.txt .
         COPY demo.ipynb .
-        RUN pip install -r requirements.txt --no-dependencies
         ENV DOCKER_STACKS_JUPYTER_CMD=notebook
         ENTRYPOINT start-notebook.py --IdentityProvider.token=''
     ports:
