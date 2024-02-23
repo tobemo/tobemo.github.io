@@ -1,11 +1,9 @@
 # Digits stroke classification
 <!-- [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/tobemo/tobemo.github.io/HEAD?labpath=demo.ipynb)<br> -->
 <!-- > For completeness sake I have included a link to binder so you can try it out for yourself but note that it is *extremely* slow. -->
-This repo showcases using [ROCKET](https://arxiv.org/abs/1910.13051) on [sequential MNIST data](https://github.com/edwin-de-jong/mnist-digits-stroke-sequence-data/wiki/MNIST-digits-stroke-sequence-data).<br>
-A big thanks to [Edwin D. de Jong](https://edwin-de-jong.github.io/) for the dataset.
+This repo showcases using [ROCKET](https://arxiv.org/abs/1910.13051) (Angus Dempster et al.) on [sequential MNIST data](https://github.com/edwin-de-jong/mnist-digits-stroke-sequence-data/wiki/MNIST-digits-stroke-sequence-data) ([Edwin D. de Jong](https://edwin-de-jong.github.io/)).
 
-Note that this dataset simulates an actual pen stroke and is thus not, as is often done, MNIST images flattened to a 1D vector to be then used sequentially.
-[See here](https://github.com/edwin-de-jong/mnist-digits-stroke-sequence-data/wiki/MNIST-digits-stroke-sequence-data#examples) for an example.
+Note that this dataset simulates an actual pen stroke and is thus not, as is often done, MNIST images flattened to a 1D vector to be then used sequentially. See [here](https://github.com/edwin-de-jong/mnist-digits-stroke-sequence-data/wiki/MNIST-digits-stroke-sequence-data#examples) for an example.
 
 ## Results
 > This is sped up by around 2x.
