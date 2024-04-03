@@ -213,7 +213,7 @@ class EnhancedCli(LightningCLI):
         for trial in trials:
             results.append({
                 'best_trial': trial.number,
-                'relevant_version': trainer.logger.version,
+                'tensorboard_version': trainer.logger.version,
                 'value': trial.values,
                 'params': trial.params,
             })
