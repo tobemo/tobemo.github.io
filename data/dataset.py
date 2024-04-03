@@ -50,8 +50,8 @@ class SequentialNumberBase(Dataset):
     
     def compute_scaling(self) -> None:
         """Compute global mean and standard deviation."""
-        self.mean = self.data.stack(dropna=True).mean()
-        self.std = self.data.stack(dropna=True).std()
+        self.mean = self.data.stack(future_stack=True).dropna().mean()
+        self.std = self.data.stack(future_stack=True).dropna().std()
 
     def get_scaling(self) -> tuple[float, float]:
         if self.mean is None or self.std is None:

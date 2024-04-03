@@ -76,6 +76,7 @@ class BaseClassifier(LightningModule):
         optimizer = adabelief_pytorch.AdaBelief(
             self.parameters(),
             lr=self.hparams.lr,
+            print_change_log=False,
         )
         scheduler = ReducingCosineAnnealingWarmRestarts(
             attenuation=self._lr_att,
