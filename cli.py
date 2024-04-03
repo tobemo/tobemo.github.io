@@ -106,10 +106,11 @@ class EnhancedCli(LightningCLI):
             
             # get settings and possibly instantiate non-default sampler and pruner
             study_settings = self._get(self.config, "optuna.study")
-            sampler = study_settings.sampler if study_settings.sampler is None else \
-                instantiate_class(args=(), init=study_settings.sampler)
-            pruner = study_settings.pruner if study_settings.pruner is None else \
-                instantiate_class(args=(), init=study_settings.pruner)
+            sampler = pruner = None
+            if study_settings.sampler:
+                sampler = instantiate_class(args=(), init=study_settings.sampler)
+            if study_settings.pruner:
+                pruner = instantiate_class(args=(), init=study_settings.pruner)
             
             # create new or load existing optuna-study
             # don't overwrite values in 'study_settings' namespace with 
