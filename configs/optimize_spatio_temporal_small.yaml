@@ -1,0 +1,47 @@
+model:
+  class_path: model.classifier.SpatioTemporalClassifier
+  init_args:
+    input_length: 117
+    input_channels: 2
+    C: 10
+    dropout: 0.5
+    lr: 1e-3
+    lr_restart: 6
+
+    pool_level: 2
+    n_layers: 3
+    hidden_dimension: 3_000
+    spatial_channels: 1
+    dense: True
+
+trainer:
+  logger:
+    init_args:
+      name: spatio_temporal_small
+
+optuna:
+  monitor: valid/loss
+  study:
+    study_name: spatio_temporal
+    direction: minimize
+    pruner:
+      class_path: optuna.pruners.MedianPruner
+      init_args:
+        n_warmup_steps: 3
+  optimize:
+    timeout: 10_800 # H3
+    gc_after_trial: True
+    
+  model:
+    init_args:
+      hidden_dimension:
+        type: int
+        init_args:
+          low: 2_000
+          high: 8_000
+          log: True
+      dropout:
+        type: float
+        init_args:
+          low: 0.25
+          high: 0.75
