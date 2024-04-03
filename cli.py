@@ -208,19 +208,24 @@ class EnhancedCli(LightningCLI):
             Defaults to None in which case self.trainer is used.
         """
         trainer = trainer or self.trainer
-        trials = self.study.best_trials
-        results = []
-        for trial in trials:
-            results.append({
-                'best_trial': trial.number,
-                'tensorboard_version': trainer.logger.version,
-                'value': trial.values,
-                'params': trial.params,
-            })
+        
         n_finished_trials = len(
             [t for t in self.study.get_trials(deepcopy=False) if t.state.is_finished()]
         )
-        with open(Path(trainer.logger.log_dir) / f"trial_{n_finished_trials-1}.yaml", 'w') as f:
+        this_trial = n_finished_trials - 1
+        
+        results = [
+            {
+                'best_trial': trial.number,
+                'this_trial': this_trial,
+                'tensorboard_version': trainer.logger.version,
+                'value': trial.values,
+                'params': trial.params,
+            }
+            for trial in self.study.best_trials
+        ]
+
+        with open(Path(trainer.logger.log_dir) / f"trial_{this_trial}.yaml", 'w') as f:
             yaml.safe_dump(results, f)
     
     def after_optimize(self) -> None:
