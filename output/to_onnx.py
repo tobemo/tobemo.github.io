@@ -117,7 +117,7 @@ if __name__ == '__main__':
     )
     parser.add_argument('-n','--name', help='Name of lightning run to use.', required=True)
     parser.add_argument('-v','--version', help='Version to convert.', required=True)
-    parser.add_argument('-c','--ckpt', default='last.ckpt', help='In case a checkpoint other than last is desired.', required=False)
+    parser.add_argument('-c','--ckpt', default='last', help='In case a checkpoint other than last is desired.', required=False)
     args = vars(parser.parse_args())
     
     to_onnx(
