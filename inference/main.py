@@ -33,7 +33,7 @@ class Demo(HBox):
     def throttle_graph(self, i: int) -> None:
         self._throttle_graph = i
     
-    def __init__(self, simple: bool) -> None:
+    def __init__(self, simple: bool, fps: list[str] = None) -> None:
         """A simple demo that predicts what number (0-9) is being drawn.
         This does not work with images but instead looks at the change of direction
         of the stroke in both the x and the y axis.
@@ -50,7 +50,7 @@ class Demo(HBox):
             draw_area=(280,280),
             border_width=5,
         )
-        fps = [
+        fps = fps or [
                 f"{OUTPUT}/temporal_large",
                 f"{OUTPUT}/temporal_small",
             ]
